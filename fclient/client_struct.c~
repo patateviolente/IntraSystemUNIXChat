@@ -1,0 +1,80 @@
+#include "../headers/client_struct.h"
+
+
+int cutMessage(char line[]){
+	char c;
+	int i=0, u=0;
+	
+	// capture chanel name
+	while (line[i] != ':' && line[i] != '\0')
+		msgcut->chan[i] = line[i++];
+	msgcut->chan[i++] = '\0';
+	
+	// capture pseudo emetteur 
+	while (line[i] != ':' && line[i] != '\0')
+		msgcut->pseudo[u++] = line[i++];
+	msgcut->pseudo[u] = '\0';
+	
+	// capture msg
+	u = 0; i++;
+	while (line[i] != '\0' && line[i] != '\n')
+		msgcut->msg[u++] = line[i++];
+	msgcut->msg[u] = '\0';
+	
+	return 0;
+}
+
+
+int addClient(char line[]){	
+	int i=0, u, len = strlen(line);
+	char pseudo[MAX_PSEUDO_LENGTH+1];
+	if((len+3) > MAX_PSEUDO_LENGTH) return -1;					// too long
+	
+	// get pseudo from line type ::#+pseudo
+	for(u=3; u<len-1; u++) pseudo[i++] = line[u];
+	pseudo[i] = '\0';
+	
+	/* useless ?
+	// already exists ?
+	for(u=0; u<users->nb; u++)
+		if(strcmp(users->pseudo[u], pseudo) == 0) return 1;		// already exists
+	if(users->nb >= MAX_USR_STORED) return 2;					// no more space
+	*/
+	
+	// add into array
+	strcpy(users->pseudo[users->nb], pseudo);
+	users->nb++;
+	
+	return 0;
+}
+
+int removeClient(char line[]){
+	int i=0, u, len = strlen(line);
+	char pseudo[MAX_PSEUDO_LENGTH+1];
+	if((len+3) > MAX_PSEUDO_LENGTH) return -1;					// too long
+	
+	// get pseudo from line type ::#+pseudo
+	for(u=3; u<len-1; u++) pseudo[i++] = line[u];
+	pseudo[i] = '\0';
+	
+	// Search user
+	for(u=0; u<users->nb; u++){
+		if(strcmp(users->pseudo[u], pseudo) == 0){
+			// remove him
+			for(; u<users->nb-1; u++)
+				strcpy(users->pseudo[u], users->pseudo[u+1]);
+			users->nb--;
+			return 0;
+		} //else printf(" '%s' != '%s'\n", pseudo, users->pseudo[u]);
+	}
+	
+	/* puts("\n## DISP :");
+	for(u=0; u<users->nb; u++)
+		printf("%s\n", users->pseudo[u]); */
+	
+	return 1;													// does not exists
+}
+
+void removeAllClient(){
+	users->nb = 0;
+}

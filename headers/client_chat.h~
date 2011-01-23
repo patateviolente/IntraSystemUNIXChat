@@ -1,0 +1,20 @@
+#include "../headers/config_client.h"   // Variables defined during connexion procedure
+#include "../headers/client_draw.h"
+
+/** shared status, returning to client main fct **/
+static int returnStatus = 0;
+
+/**Interface of chat, call : 
+ * <ul>
+ * 		<li>listenChat : Display answers hearding `pipe_name`.</li>
+ * 		<li>display connected users hearding CUSERS_PIPE</li>
+ * 		<li>Can send answers, juste type</li>
+ * </ul> */
+int clientChat();
+
+/** <p>Listen `pipe_name` for text and display it.
+ * Stop only when pipe destroyed, return nothing.</p> **/
+int listenChat();
+
+/** Capture message and send it to server. */
+int promptField();

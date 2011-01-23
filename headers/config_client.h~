@@ -1,0 +1,26 @@
+/*****************************************************
+ * Server configuration : not shared with server
+ * Include shared configuration
+ */
+#include "config.h"
+#define NBMESSAGES_STOCK 200			// messages stocked in ram
+
+/** Variables defined during connexion procedure : **/
+/* Each client have a pipe and choice themselve their name composed by the 
+ * login ended by a succin number other client shouldn't know ! */
+char 		pipe_num[MAX_NUMPIPE]; 		// User own succint number (char)
+unsigned long int  	pipe_number;				//     ""       ""    ""  (as int) 
+int  		pid;						// pid of client
+long int  	num;						// number generate by server (for security)
+char 		pseudo[MAX_PSEUDO_LENGTH];	// pseudonym
+char 		pipename[MAX_PIPE_NAME];	// pipe name
+
+
+/** PARAMETERS **/
+int o_gui;		// graphical user interface
+
+
+// stock messages
+char * msg[NBMESSAGES_STOCK];
+int * msg_curs;
+int msg_loop;

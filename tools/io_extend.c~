@@ -1,0 +1,77 @@
+#include "../headers/io_extend.h"
+#define MAXARGNAME_LEN 10
+#define MAXARGVALUE_LEN 10
+
+/**
+ * Clean standard input from keyboard.
+ * If a too big string is typed and fgets refused to take them all. Buffer
+ * should be clear
+ */
+void clearBuffer(){
+    int c = 0;
+    while (c != '\n' && c != EOF)
+        c = getchar();
+}
+
+/**
+ * Securized scan : put in str the standard keyboard input but with a maximum
+ * length caracters. Then throw the buffer.
+ * @param str Char array where text must be placed
+ * @param length Maximum caracters to put in array (included \0 !)
+ * @return 
+ *    <ul>
+ *       <li>0 if ok</li>
+ *       <li>-1 if input truncated (and cleared)</li>
+ *       <li>1 if fgets failed</li>
+ *    </ul>
+ */
+int readKeyboard(char *str, int length)
+{
+    char *brPosition = NULL;
+ 
+    // scaning entry
+    if (fgets(str, length+1, stdin) != NULL) {
+        brPosition = strchr(str, '\n'); // 
+        if (brPosition != NULL) // backrow detected
+            *brPosition = '\0'; 	// replacing backrow
+        else{
+			clearBuffer();
+			return -1;
+        }
+        return 0;
+    }
+    else{
+		clearBuffer();
+		return 1; // On renvoie 0 s'il y a eu une erreur
+	}
+}
+
+
+/**
+ * Thanks to this answer to use another function than getpass (obsolete)
+ * http://stackoverflow.com/questions/1196418/getting-a-password-in-c-without-using-getpass-3
+ * Disable echo, and capture keyboard with fgets
+ */
+void getThisPass(char * password){
+	struct termios oflags, nflags;
+
+    /* disabling echo */
+    tcgetattr(fileno(stdin), &oflags);
+    nflags = oflags;
+    nflags.c_lflag &= ~ECHO;
+    nflags.c_lflag |= ECHONL;
+	
+    if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0) {
+        perror("tcsetattr");
+    }
+	
+    fgets(password, sizeof(password), stdin);
+    password[strlen(password) - 1] = 0;
+    // printf("you typed '%s'\n", password);
+
+    /* restore terminal */
+    if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0) {
+        perror("tcsetattr");
+    }
+}
+
